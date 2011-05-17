@@ -31,8 +31,9 @@ o.save
 
 
 # Reading objects
-s3['/test.txt'].class   # => UberS3::Object
-s3['/test.txt'].value   # => 'heyo'
+s3['/test.txt'].class       # => UberS3::Object
+s3['/test.txt'].value       # => 'heyo'
+s3.get('/test.txt').value   # => 'heyo'
 
 s3.exists?('/anotherone') # => false
 

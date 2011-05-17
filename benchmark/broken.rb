@@ -21,11 +21,11 @@ SETTINGS = YAML.load(File.read("#{UBERS3_ROOT}/spec/config/settings.yml"))['test
 require 'uber-s3'
 require 'benchmark'
 
-NUM_FILES  = 100
-DATA_SIZE  = 1024 # in bytes
+NUM_FILES  = 50
+DATA_SIZE  = 1024*100 # in bytes
 
 
-NUM_FIBERS = 2
+NUM_FIBERS = 10
 require 'fiber_pool'
 @fiber_pool = FiberPool.new(NUM_FIBERS)
 
@@ -46,15 +46,25 @@ data = (1..DATA_SIZE).map{|i| ('a'..'z').to_a[rand(26)]}.join
 ## Bench cases ----------------------------------------------------------------
 
 # Saving objects
-save_object_bm = Proc.new do |client|
+save_object_bm = Proc.new do |client,async|
+  @processed = 0
+  
   files.each do |filename|
     work = Proc.new do
-      $stderr.puts filename
+      $stderr.puts "START => #{filename}"
       ret = client.store(filename, data)
+      $stderr.puts "DONE  => #{filename}"
       $stderr.puts "Error storing file #{filename}" if !ret
+      @processed += 1
+      EM.stop if async && @processed == NUM_FILES
     end
     
-    @fiber_pool.spawn(&work)
+    if async
+      @fiber_pool.spawn(&work)
+      # Fiber.new { work.call }.resume
+    else
+      work.call
+    end
   end
 end
 
@@ -76,17 +86,14 @@ end
 
 ## Let's run this thing -------------------------------------------------------
 
-Benchmark.bmbm do |bm|
-  # bm.report("saving #{NUM_FILES} objects (net-http)") do
+Benchmark.bm do |bm|
+  # bm.report("saving #{NUM_FILES}x#{DATA_SIZE} byte objects (net-http)") do
   #   save_object_bm.call(s3[:net_http], false)
   # end
 
-  bm.report("saving #{NUM_FILES} objects (em-http-sync)") do
+  bm.report("saving #{NUM_FILES}x#{DATA_SIZE} byte objects (em-http-sync)") do
     EM.run do
-      # EM.add_periodic_timer(1) { $stderr.puts "hi" }
-      save_object_bm.call(s3[:em_http_sync])
-      
-      EM.stop
+      save_object_bm.call(s3[:em_http_sync], true)
     end
   end
 end
