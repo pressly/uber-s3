@@ -6,8 +6,12 @@ class UberS3
       req_content_md5           = headers['Content-MD5']
       req_content_type          = headers['Content-Type']
       req_date                  = headers['Date']
+      req_canonical_resource    = "/#{client.bucket}/#{path}".split('?').first
       req_canonical_amz_headers = ''
-      req_canonical_resource    = "/#{client.bucket}#{path}"
+
+      headers.keys.select {|k| k =~ /^x-amz-acl/ }.each do |amz_key|
+        req_canonical_amz_headers << amz_key+':'+headers[amz_key]+"\n"
+      end
       
       canonical_string_to_sign = "#{req_verb}\n"+
                                  "#{req_content_md5}\n"+

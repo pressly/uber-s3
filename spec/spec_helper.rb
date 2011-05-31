@@ -32,3 +32,22 @@ SETTINGS = YAML.load(File.read("#{SPEC_ROOT}/config/settings.yml"))['test']
 RSpec.configure do |config|
   config.mock_with :rspec  
 end
+
+###
+
+# Helper method to run specs against multiple adapters
+def spec(client, &block)
+  # TODO: eventually refactor this or find a better pattern
+  
+  case client.connection.class.to_s
+  when 'UberS3::Connection::NetHttp'
+    block.call(client)
+  when 'UberS3::Connection::EmHttpFibered'
+    EM.synchrony do
+      block.call(client)
+      EM.stop
+    end
+  else
+    raise "Unknown connection adapter"
+  end
+end

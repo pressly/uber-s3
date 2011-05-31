@@ -1,17 +1,15 @@
+require 'cgi'
 require 'time'
 require 'openssl'
 require 'forwardable'
+require 'base64'
+require 'digest/md5'
 
 class UberS3
   extend Forwardable
   
-  # TODO: should go somewhere else.. prob Connection
-  # AMAZON_HEADER_PREFIX = 'x-amz-'
-  
-  attr_accessor :connection, :bucket
-  
-  def_delegators :@bucket, :store, :set, :object, :get, :[], :exists?
-  
+  attr_accessor :connection, :bucket  
+  def_delegators :@bucket, :store, :set, :object, :get, :[], :exists?, :objects
   
   def initialize(options={})
     self.connection = Connection.open(self, options)
@@ -25,11 +23,13 @@ class UberS3
   def bucket=(bucket)
     @bucket = bucket.is_a?(Bucket) ? bucket : Bucket.new(self, bucket)
   end
-    
 end
 
 require 'uber-s3/version'
+require 'uber-s3/exceptions'
 require 'uber-s3/connection'
 require 'uber-s3/authorization'
 require 'uber-s3/bucket'
 require 'uber-s3/object'
+
+require 'uber-s3/util/xml_document'

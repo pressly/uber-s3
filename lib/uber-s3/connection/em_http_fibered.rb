@@ -4,7 +4,7 @@ require 'em-synchrony'
 require 'em-synchrony/em-http'
 
 module UberS3::Connection
-  class EmHttpSync < Adapter
+  class EmHttpFibered < Adapter
     
     def request(verb, url, headers={}, body=nil)
       params = {}

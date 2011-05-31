@@ -21,8 +21,8 @@ SETTINGS = YAML.load(File.read("#{UBERS3_ROOT}/spec/config/settings.yml"))['test
 require 'uber-s3'
 require 'benchmark'
 
-NUM_FILES  = 50
-DATA_SIZE  = 1024*100 # in bytes
+NUM_FILES  = 100
+DATA_SIZE  = 1024 # in bytes
 
 
 NUM_FIBERS = 10
@@ -51,9 +51,9 @@ save_object_bm = Proc.new do |client,async|
   
   files.each do |filename|
     work = Proc.new do
-      $stderr.puts "START => #{filename}"
+      # $stderr.puts "START => #{filename}"
       ret = client.store(filename, data)
-      $stderr.puts "DONE  => #{filename}"
+      # $stderr.puts "DONE  => #{filename}"
       $stderr.puts "Error storing file #{filename}" if !ret
       @processed += 1
       EM.stop if async && @processed == NUM_FILES
@@ -72,7 +72,7 @@ end
 ## Clients --------------------------------------------------------------------
 
 s3 = {}.tap do |clients|
-  [:net_http, :em_http_sync].each do |mode|
+  [:net_http, :em_http_fibered].each do |mode|
     clients[mode] = UberS3.new({
       :access_key         => SETTINGS['access_key'],
       :secret_access_key  => SETTINGS['secret_access_key'],
@@ -87,13 +87,13 @@ end
 ## Let's run this thing -------------------------------------------------------
 
 Benchmark.bm do |bm|
-  # bm.report("saving #{NUM_FILES}x#{DATA_SIZE} byte objects (net-http)") do
+  # bm.report("saving #{NUM_FILES}x#{DATA_SIZE} byte objects (net-http) ") do
   #   save_object_bm.call(s3[:net_http], false)
   # end
 
-  bm.report("saving #{NUM_FILES}x#{DATA_SIZE} byte objects (em-http-sync)") do
+  bm.report("saving #{NUM_FILES}x#{DATA_SIZE} byte objects (em-http-fibered) ") do
     EM.run do
-      save_object_bm.call(s3[:em_http_sync], true)
+      save_object_bm.call(s3[:em_http_fibered], true)
     end
   end
 end

@@ -1,5 +1,6 @@
 class UberS3
-  class Bucket    
+  class Bucket
+    
     attr_accessor :client, :name
     
     def initialize(client, name)
@@ -32,14 +33,67 @@ class UberS3
     def exists?(key)
       object(key).exists?
     end
-
-
-    def index
+    
+    def objects(key, options={})
+      ObjectList.new(self, key, options)
     end
     
-    def objects(options={})
-    end
     
+    class ObjectList
+      attr_accessor :bucket, :key, :options, :objects
+      
+      def initialize(bucket, key, options={})
+        self.bucket   = bucket
+        self.key      = key.gsub(/^\//, '')
+        self.options  = options
+        self.objects  = []
+      end
+      
+      def fetch(marker=nil)
+        @objects = []
+
+        response = bucket.connection.get("/?prefix=#{CGI.escape(key)}&marker=#{marker}")
+        # response = bucket.connection.get("/?prefix=#{CGI.escape(key)}&marker=#{marker}&max-keys=2")
+        
+        if response[:status] != 200
+          raise UberS3Error
+        else
+          @objects = parse_contents(response[:body])
+        end
+      end
+      
+      def parse_contents(xml)
+        objects = []
+        doc = Util::XmlDocument.new(xml)
+        
+        # TODO: can use more error checking on the xml stuff
+        
+        @is_truncated = doc.xpath('//ListBucketResult/IsTruncated').first.text == "true"
+        contents = doc.xpath('//ListBucketResult/Contents')
+        
+        contents.each do |content|
+          h = {}
+          content.elements.each {|el| h[el.name] = el.text }
+          objects << ::UberS3::Object.new(bucket, h['Key'], nil, { :size => h['Size'].to_i })
+        end if contents.any?
+
+        objects
+      end
+      
+      def each(&block)
+        loop do
+          marker = objects.last.key rescue nil
+          fetch(marker)
+          
+          objects.each {|obj| block.call(obj) }
+          break if @is_truncated == false
+        end
+      end
+      
+      def to_a
+        fetch
+      end
+    end
     
   end
 end

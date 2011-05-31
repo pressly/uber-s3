@@ -8,8 +8,8 @@ module UberS3::Connection
       http = Net::HTTP.new(uri.host, uri.port)
       
       req_klass = instance_eval("Net::HTTP::"+verb.to_s.capitalize)
-      req = req_klass.new(uri.path, headers)
-      
+      req = req_klass.new(uri.to_s, headers)
+            
       r = http.request(req, body)
       
       {
