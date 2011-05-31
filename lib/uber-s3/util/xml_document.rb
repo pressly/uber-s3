@@ -36,10 +36,11 @@ module UberS3::Util
       
       def initialize(xml)
         self.doc = Nokogiri::XML(xml)
+        doc.remove_namespaces!
       end
       
       def xpath(path)
-        doc.xpath(path)
+        doc.xpath(path).to_a
       end
     end
     

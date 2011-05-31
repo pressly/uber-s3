@@ -105,7 +105,6 @@ s3.objects('/path').each {|obj| puts obj }
 
 ## TODO
 
-* Object URL construction
 * Refactor UberS3::Object class, consider putting the operations/headers into separate classes
 * Better exception handling and reporting
 * Query string authentication -- neat feature for providing temporary public access to a private object
