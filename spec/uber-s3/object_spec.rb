@@ -17,7 +17,7 @@ describe UberS3::Object do
       let(:obj) { UberS3::Object.new(s3.bucket, '/test.txt', 'heyo') }
 
       it 'storing and loading an object' do
-        spec(s3) do      
+        spec(s3) do
           obj.save.should == true
           obj.exists?.should == true
       
