@@ -99,7 +99,13 @@ s3.objects('/path').each {|obj| puts obj }
 
 ```
 
-## Other tips
+## Ruby version notes
+
+* Tested on MRI 1.9.2 (net_http / em_http_fibered adapters) -- recommended
+* Ruby 1.8.7 works for net/http clients, em_http_fibered adapter requires fibers (duh)
+* JRuby in 1.9 mode + em_http_fibered adapter should work, but held back because of issues with EM
+
+## Other notes
 
 * If Nokogiri is available, it will use it instead of REXML
 

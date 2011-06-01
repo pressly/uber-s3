@@ -27,9 +27,11 @@ class UberS3
       end
     
       [:get, :post, :put, :delete, :head].each do |verb|
-        define_method(verb) do |path, headers={}, body=nil|
+        define_method(verb) do |*args|
+          path, headers, body = args
           path = path.gsub(/^\//, '')
-          
+          headers ||= {}
+
           # Default headers
           headers['Date'] = Time.now.httpdate if !headers.keys.include?('Date')
           headers['User-Agent'] ||= "UberS3 v#{UberS3::VERSION}"
@@ -39,7 +41,7 @@ class UberS3
             headers['Content-Type']   ||= 'application/octet-stream'
             headers['Content-Length'] ||= body.bytesize.to_s
           end
-                    
+          
           # Authorize the request          
           signature = Authorization.sign(client, verb, path, headers)
           headers['Authorization'] = "AWS #{access_key}:#{signature}"

@@ -18,7 +18,7 @@ GIT
 PATH
   remote: .
   specs:
-    uber-s3 (0.0.1)
+    uber-s3 (0.1.0)
 
 GEM
   remote: http://rubygems.org/
@@ -30,10 +30,13 @@ GEM
     em-socksify (0.1.0)
       eventmachine
     eventmachine (1.0.0.beta.3)
+    eventmachine (1.0.0.beta.3-java)
     http_parser.rb (0.5.1)
+    http_parser.rb (0.5.1-java)
+    linecache (0.43)
     linecache19 (0.5.12)
       ruby_core_source (>= 0.1.4)
-    rake (0.9.0)
+    rake (0.9.1)
     rspec (2.6.0)
       rspec-core (~> 2.6.0)
       rspec-expectations (~> 2.6.0)
@@ -42,6 +45,11 @@ GEM
     rspec-expectations (2.6.0)
       diff-lcs (~> 1.1.2)
     rspec-mocks (2.6.0)
+    ruby-debug (0.10.4)
+      columnize (>= 0.1)
+      ruby-debug-base (~> 0.10.4.0)
+    ruby-debug-base (0.10.4)
+      linecache (>= 0.3)
     ruby-debug-base19 (0.11.25)
       columnize (>= 0.3.1)
       linecache19 (>= 0.5.11)
@@ -54,12 +62,15 @@ GEM
       archive-tar-minitar (>= 0.5.2)
 
 PLATFORMS
+  java
   ruby
 
 DEPENDENCIES
   em-http-request!
   em-synchrony!
+  eventmachine (= 1.0.0.beta.3)
   rake
   rspec (~> 2.6.0)
+  ruby-debug
   ruby-debug19
   uber-s3!

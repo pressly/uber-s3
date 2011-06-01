@@ -19,7 +19,7 @@ class UberS3
       self.key    = key
       self.value  = value
       
-      options.each {|k,v| self.send (k.to_s+'=').to_sym, v }
+      options.each {|k,v| self.send((k.to_s+'=').to_sym, v) }
     end
     
     def to_s
