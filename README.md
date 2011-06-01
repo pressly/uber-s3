@@ -25,6 +25,7 @@ s3 = UberS3.new({
 ##########################################################################
 # Saving objects
 s3.store('/test.txt', 'Look ma no hands')
+s3.store('test2.txt', 'Hey hey', :access => :public_read)
 
 o = s3.object('/test.txt')
 o.value = 'Look ma no hands'
