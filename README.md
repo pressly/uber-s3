@@ -3,6 +3,7 @@
 A simple, but very fast, S3 client written in Ruby supporting
 synchronous and asynchronous HTTP communication.
 
+
 ## Examples
 
 ```ruby
@@ -116,7 +117,35 @@ s3.objects('/path').each {|obj| puts obj }
 * Query string authentication -- neat feature for providing temporary public access to a private object
 * Object versioning support
 
+## Benchmarks
+
+* Benchmarks were run with a speedy MBP on a 10Mbit connection
+
+### Saving lots of 1KB files
+`
+                                                        user     system      total        real
+saving 100x1024 byte objects (net-http)            0.160000   0.080000   0.240000 ( 26.128499)
+saving 100x1024 byte objects (em-http-fibered)     0.080000   0.030000   0.110000 (  0.917334)
+`
+
+### Saving lots of 500KB files
+`
+                                                        user     system      total        real
+saving 100x512000 byte objects (net-http)          0.190000   0.740000   0.930000 ( 91.559123)
+saving 100x512000 byte objects (em-http-fibered)   0.230000   0.700000   0.930000 ( 45.119033)
+`
+
+### Conclusion
+
+Yea... async adapter dominates. The 100x1KB files were 29x faster to upload, and the 100x500KB files were only 2x faster, but that is because my upload bandwidth was tapped.
+
+
 ## S3 API Docs
 
 - S3 REST API: http://docs.amazonwebservices.com/AmazonS3/latest/API/
 - S3 Request Authorization: http://docs.amazonwebservices.com/AmazonS3/latest/dev/RESTAuthentication.html
+
+
+## License
+
+MIT License - Copyright (c) 2011 Nulayer Inc.
