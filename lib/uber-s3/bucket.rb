@@ -56,7 +56,7 @@ class UberS3
         # response = bucket.connection.get("/?prefix=#{CGI.escape(key)}&marker=#{marker}&max-keys=2")
         
         if response[:status] != 200
-          raise UberS3Error
+          raise UberS3Error, response.inspect
         else
           @objects = parse_contents(response[:body])
         end

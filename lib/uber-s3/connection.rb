@@ -35,7 +35,7 @@ class UberS3
           # Default headers
           headers['Date'] = Time.now.httpdate if !headers.keys.include?('Date')
           headers['User-Agent'] ||= "UberS3 v#{UberS3::VERSION}"
-          headers['Connection'] = (persistent ? 'keep-alive' : 'close')
+          # headers['Connection'] = (persistent ? 'keep-alive' : 'close')
           
           if body
             headers['Content-Type']   ||= 'application/octet-stream'

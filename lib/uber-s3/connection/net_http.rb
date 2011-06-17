@@ -15,7 +15,8 @@ module UberS3::Connection
       {
         :status => r.code.to_i,
         :header => r.header.to_hash,
-        :body   => r.body
+        :body   => r.body,
+        :raw    => r
       }
     end
     

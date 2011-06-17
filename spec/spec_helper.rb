@@ -43,9 +43,8 @@ def spec(client, &block)
   when 'UberS3::Connection::NetHttp'
     block.call(client)
   when 'UberS3::Connection::EmHttpFibered'
-    EM.synchrony do
-      block.call(client)
-      EM.stop
+    EM.run do
+      Fiber.new { block.call(client); EM.stop }.resume
     end
   else
     raise "Unknown connection adapter"

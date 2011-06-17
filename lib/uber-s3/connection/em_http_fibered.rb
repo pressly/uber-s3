@@ -10,13 +10,15 @@ module UberS3::Connection
       params = {}
       params[:head] = headers
       params[:body] = body if body
-    
+      # params[:keepalive] = true if persistent # causing issues ...?
+        
       r = EM::HttpRequest.new(url).send(verb, params)
-      
+
       {
         :status => r.response_header.status,
         :header => r.response_header,
-        :body   => r.response
+        :body   => r.response,
+        :raw    => r
       }
     end
     

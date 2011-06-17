@@ -33,7 +33,7 @@ o.save
 
 # or..
 
-o = UberS3::Object.new(client.bucket, '/test.txt', 'heyo')
+o = UberS3::Object.new(s3.bucket, '/test.txt', 'heyo')
 o.save # => true
 
 
@@ -125,7 +125,7 @@ Benchmarks were run with a speedy MBP on a 10Mbit connection
 ### Saving lots of 1KB files
 
 <pre>
-                                                        user     system      total        real
+                                                       user     system      total        real
 saving 100x1024 byte objects (net-http)            0.160000   0.080000   0.240000 ( 26.128499)
 saving 100x1024 byte objects (em-http-fibered)     0.080000   0.030000   0.110000 (  0.917334)
 </pre>
@@ -133,7 +133,7 @@ saving 100x1024 byte objects (em-http-fibered)     0.080000   0.030000   0.11000
 ### Saving lots of 500KB files
 
 <pre>
-                                                        user     system      total        real
+                                                       user     system      total        real
 saving 100x512000 byte objects (net-http)          0.190000   0.740000   0.930000 ( 91.559123)
 saving 100x512000 byte objects (em-http-fibered)   0.230000   0.700000   0.930000 ( 45.119033)
 </pre>
