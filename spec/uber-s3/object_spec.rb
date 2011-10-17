@@ -15,14 +15,14 @@ describe UberS3::Object do
       end
 
       let(:obj) { UberS3::Object.new(s3.bucket, '/test.txt', 'heyo') }
-
+      
       it 'storing and loading an object' do
         spec(s3) do
           obj.save.should == true
           obj.exists?.should == true
       
           #--
-
+      
           key = 'test.txt'
           value = 'testing 1234...'
           
@@ -38,7 +38,7 @@ describe UberS3::Object do
           s3[key].exists?.should == false
         end
       end
-
+      
       it 'has access level control' do
         spec(s3) do
           obj.access = :public_read
@@ -53,6 +53,24 @@ describe UberS3::Object do
         end
       end
 
+      it 'encode the data with gzip' do
+        spec(s3) do        
+          key = 'gzip_test.txt'
+          value = 'testing 1234...'*256
+        
+          s3.store(key, value, { :gzip => true })
+        
+          # Uber S3 client will auto-decode ...
+          gzipped_data = s3[key].value
+          gzipped_data.bytesize.should == value.bytesize
+          
+          # But, let's make sure on the server it's the small size
+          header = s3.connection.head(key)[:header]
+          content_length = [header['content-length']].flatten.first.to_i
+          content_length.should < value.bytesize
+        end
+      end
+      
     end
     
   end

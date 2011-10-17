@@ -1,24 +1,28 @@
 class UberS3
   class Object
+    include Operation::Object::All
 
-    attr_accessor :bucket, :key, :value, :errors
-    # attr_accessor :etag, :last_modified
+    attr_accessor :bucket, :key, :value, :size, :errors
     
-    attr_accessor :access,
-                  :cache_control,
-                  :content_disposition,
-                  :content_encoding,
-                  :size,
-                  :content_md5,
-                  :content_type,
-                  :expires,
-                  :storage_class
+    # attr_accessor :access,
+    #               :cache_control,
+    #               :content_disposition,
+    #               :content_encoding,
+    #               :size,
+    #               :content_md5,
+    #               :content_type,
+    #               :expires,
+    #               :storage_class
     
     def initialize(bucket, key, value=nil, options={})
-      self.bucket = bucket
-      self.key    = key
-      self.value  = value
+      self.bucket        = bucket
+      self.key           = key
+      self.value         = value
       
+      # Init state of object
+      infer_content_type!
+      
+      # Call operation methods based on options passed
       bucket.connection.defaults.merge(options).each {|k,v| self.send((k.to_s+'=').to_sym, v) }
     end
     
@@ -37,6 +41,9 @@ class UberS3
     
     def save
       headers = {}
+      
+      # Encode data if necessary
+      gzip_content!
       
       # Standard pass through values
       headers['Cache-Control']        = cache_control
@@ -69,6 +76,7 @@ class UberS3
       response = bucket.connection.put(key, headers, value)
       
       if response[:status] != 200
+        # TODO: .. we should raise stuff here!!!!!!!! exception handling....................
         self.errors = response[:body]    
       else
         self.errors = nil
@@ -98,32 +106,13 @@ class UberS3
       @key = key.gsub(/^\//,'')
     end
     
-    ##########################
-    
     def value=(value)
       self.size = value.to_s.bytesize
       @value = value
     end
     
-    def access=(access)
-      valid_values = [:private, :public_read, :public_read_write, :authenticated_read]
-      
-      if valid_values.include?(access)
-        @access = access
-      else
-        raise "Invalid access value"
-      end
-    end
-    
-    def storage_class=(storage_class)
-      valid_values = [:standard, :reduced_redundancy]
-      
-      if valid_values.include?(storage_class)
-        @storage_class = storage_class
-      else
-        raise "Invalid storage_class value"
-      end
-    end
+    # TODO..
+    # Add callback support so Operations can hook into that ... cleaner. ie. on_save { ... }
     
   end
 end

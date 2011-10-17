@@ -39,10 +39,6 @@ class UberS3
           # headers['Connection'] = (persistent ? 'keep-alive' : 'close')
           
           if body
-            mime_type = MIME::Types.type_for(path).first
-            
-            headers['Content-Type']   ||= mime_type.content_type if mime_type
-            headers['Content-Type']   ||= 'binary/octet-stream'
             headers['Content-Length'] ||= body.bytesize.to_s
           end
           
