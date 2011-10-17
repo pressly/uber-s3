@@ -1,6 +1,6 @@
 begin
   require 'bundler'
-  Bundler.setup(:default, :test)
+  Bundler.setup(:default, :development)
 rescue LoadError => e
   # Fall back on doing an unlocked resolve at runtime.
   $stderr.puts e.message

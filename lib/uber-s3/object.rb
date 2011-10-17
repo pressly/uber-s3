@@ -19,7 +19,7 @@ class UberS3
       self.key    = key
       self.value  = value
       
-      options.each {|k,v| self.send((k.to_s+'=').to_sym, v) }
+      bucket.connection.defaults.merge(options).each {|k,v| self.send((k.to_s+'=').to_sym, v) }
     end
     
     def to_s
@@ -43,7 +43,6 @@ class UberS3
       headers['Content-Disposition']  = content_disposition
       headers['Content-Encoding']     = content_encoding
       headers['Content-Length']       = size.to_s
-      headers['Content-MD5']          = content_md5
       headers['Content-Type']         = content_type
       headers['Expires']              = expires
             

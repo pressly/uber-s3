@@ -4,6 +4,7 @@ require 'openssl'
 require 'forwardable'
 require 'base64'
 require 'digest/md5'
+require 'mime/types'
 
 class UberS3
   extend Forwardable

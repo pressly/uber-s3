@@ -17,13 +17,14 @@ class UberS3
     
     class Adapter
     
-      attr_accessor :client, :access_key, :secret_access_key, :persistent
+      attr_accessor :client, :access_key, :secret_access_key, :persistent, :defaults
     
       def initialize(client, options={})
         self.client             = client
         self.access_key         = options[:access_key]
         self.secret_access_key  = options[:secret_access_key]
         self.persistent         = options[:persistent] || true
+        self.defaults           = options[:defaults] || {}
       end
     
       [:get, :post, :put, :delete, :head].each do |verb|
@@ -38,7 +39,10 @@ class UberS3
           # headers['Connection'] = (persistent ? 'keep-alive' : 'close')
           
           if body
-            headers['Content-Type']   ||= 'application/octet-stream'
+            mime_type = MIME::Types.type_for(path).first
+            
+            headers['Content-Type']   ||= mime_type.content_type if mime_type
+            headers['Content-Type']   ||= 'binary/octet-stream'
             headers['Content-Length'] ||= body.bytesize.to_s
           end
           
