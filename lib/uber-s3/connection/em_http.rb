@@ -5,9 +5,8 @@ module UberS3::Connection
   class EmHttp < Adapter
     
     # NOTE: this will be very difficult to support
-    # with our interface.. will need lots of work
-    # perhaps will limit async capabilities to
-    # fibered mode
+    # with our interface.. will need lots of work.
+    # We may only want to support async with fibers.
     
   end
 end

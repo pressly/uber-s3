@@ -4,22 +4,12 @@ class UberS3
 
     attr_accessor :bucket, :key, :value, :size, :errors
     
-    # attr_accessor :access,
-    #               :cache_control,
-    #               :content_disposition,
-    #               :content_encoding,
-    #               :size,
-    #               :content_md5,
-    #               :content_type,
-    #               :expires,
-    #               :storage_class
-    
     def initialize(bucket, key, value=nil, options={})
       self.bucket        = bucket
       self.key           = key
       self.value         = value
       
-      # Init state of object
+      # Init current state
       infer_content_type!
       
       # Call operation methods based on options passed
@@ -57,7 +47,9 @@ class UberS3
 
       # Content MD5 integrity check
       if !content_md5.nil?
-        # Our object expects a md5 hex digest
+        content_md5 = Digest::MD5.hexdigest(value) if content_md5 == true
+
+        # We expect a md5 hex digest here
         md5_digest = content_md5.unpack('a2'*16).collect {|i| i.hex.chr }.join
         headers['Content-MD5'] = Base64.encode64(md5_digest).strip
       end
@@ -76,8 +68,12 @@ class UberS3
       response = bucket.connection.put(key, headers, value)
       
       if response[:status] != 200
+
+        
         # TODO: .. we should raise stuff here!!!!!!!! exception handling....................
-        self.errors = response[:body]    
+        self.errors = response[:body]
+        # debugger
+        # a = 1
       else
         self.errors = nil
       end

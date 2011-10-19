@@ -18,7 +18,7 @@ s3 = UberS3.new({
 })
 
 x = Proc.new do
-  # Traverse all objects in the bucket -- beware :)
+  # Traverse all objects in the bucket -- beware of huge buckets :)
   # This will only load the keys and basic info of the object, not the data
   s3.objects('/').each do |obj|
     puts obj

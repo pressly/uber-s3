@@ -1,6 +1,5 @@
 class UberS3
   class Bucket
-    
     attr_accessor :client, :name
     
     def initialize(client, name)
@@ -40,6 +39,8 @@ class UberS3
     
     
     class ObjectList
+      include Enumerable
+      
       attr_accessor :bucket, :key, :options, :objects
       
       def initialize(bucket, key, options={})
@@ -52,8 +53,8 @@ class UberS3
       def fetch(marker=nil)
         @objects = []
 
-        response = bucket.connection.get("/?prefix=#{CGI.escape(key)}&marker=#{marker}")
-        # response = bucket.connection.get("/?prefix=#{CGI.escape(key)}&marker=#{marker}&max-keys=2")
+        default_max_keys = 500
+        response = bucket.connection.get("/?prefix=#{CGI.escape(key)}&marker=#{marker}&max-keys=#{default_max_keys}")
         
         if response[:status] != 200
           raise UberS3Error, response.inspect

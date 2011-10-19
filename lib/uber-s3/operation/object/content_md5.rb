@@ -14,6 +14,7 @@ module UberS3::Operation::Object
     end
     
     module InstanceMethods
+      # TODO.. move stuff from object.rb to here... need callback / chaining stuff...
     end
     
   end

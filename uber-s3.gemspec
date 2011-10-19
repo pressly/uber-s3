@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.name        = 'uber-s3'
   s.version     = UberS3::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.summary     = 'A simple & very fast S3 client supporting sync and async communication'
+  s.summary     = 'A simple & very fast S3 client supporting sync / async HTTP adapters'
   s.description = s.summary
 
   s.authors     = ['Peter Kieltyka']
