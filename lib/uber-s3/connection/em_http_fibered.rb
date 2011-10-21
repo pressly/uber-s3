@@ -14,12 +14,12 @@ module UberS3::Connection
         
       r = EM::HttpRequest.new(url).send(verb, params)
 
-      {
+      UberS3::Response.new({
         :status => r.response_header.status,
         :header => r.response_header,
         :body   => r.response,
         :raw    => r
-      }
+      })
     end
     
   end

@@ -29,7 +29,8 @@ class UberS3
 end
 
 require 'uber-s3/version'
-require 'uber-s3/exceptions'
+require 'uber-s3/error'
+require 'uber-s3/response'
 require 'uber-s3/connection'
 require 'uber-s3/authorization'
 require 'uber-s3/operation'

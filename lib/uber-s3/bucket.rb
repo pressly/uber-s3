@@ -23,11 +23,11 @@ class UberS3
     def object(key)
       Object.new(self, key)
     end
+    alias_method :[], :object
 
     def get(key)
       object(key).fetch
     end
-    alias_method :[], :get
 
     def exists?(key)
       object(key).exists?
@@ -54,13 +54,9 @@ class UberS3
         @objects = []
 
         default_max_keys = 500
-        response = bucket.connection.get("/?prefix=#{CGI.escape(key)}&marker=#{marker}&max-keys=#{default_max_keys}")
-        
-        if response[:status] != 200
-          raise UberS3Error, response.inspect
-        else
-          @objects = parse_contents(response[:body])
-        end
+        response = bucket.connection.get("/?prefix=#{CGI.escape(key)}&marker=#{marker}&max-keys=#{default_max_keys}")        
+
+        @objects = parse_contents(response.body)
       end
       
       def parse_contents(xml)

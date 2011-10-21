@@ -1,8 +1,16 @@
 class UberS3
   class Object
-    include Operation::Object::All
+    include Operation::Object::AccessPolicy
+    include Operation::Object::CacheControl
+    include Operation::Object::ContentDisposition
+    include Operation::Object::ContentEncoding
+    include Operation::Object::ContentMd5
+    include Operation::Object::ContentType
+    include Operation::Object::Expires
+    include Operation::Object::Meta
+    include Operation::Object::StorageClass
 
-    attr_accessor :bucket, :key, :value, :size, :errors
+    attr_accessor :bucket, :key, :value, :size, :error
     
     def initialize(bucket, key, value=nil, options={})
       self.bucket        = bucket
@@ -21,11 +29,11 @@ class UberS3
     end
     
     def exists?
-      bucket.connection.head(key)[:status] == 200
+      bucket.connection.head(key).status == 200
     end
     
     def fetch
-      self.value = bucket.connection.get(key)[:body]
+      self.value = bucket.connection.get(key).body
       self
     end
     
@@ -47,7 +55,7 @@ class UberS3
 
       # Content MD5 integrity check
       if !content_md5.nil?
-        content_md5 = Digest::MD5.hexdigest(value) if content_md5 == true
+        self.content_md5 = Digest::MD5.hexdigest(value) if content_md5 == true
 
         # We expect a md5 hex digest here
         md5_digest = content_md5.unpack('a2'*16).collect {|i| i.hex.chr }.join
@@ -67,22 +75,15 @@ class UberS3
       # Let's do it
       response = bucket.connection.put(key, headers, value)
       
-      if response[:status] != 200
-
-        
-        # TODO: .. we should raise stuff here!!!!!!!! exception handling....................
-        self.errors = response[:body]
-        # debugger
-        # a = 1
-      else
-        self.errors = nil
-      end
+      # Update error state
+      self.error = response.error
       
-      response[:status] == 200
+      # Test for success....
+      response.status == 200      
     end
     
     def delete
-      bucket.connection.delete(key)[:status] == 204
+      bucket.connection.delete(key).status == 204
     end
     
     def value

@@ -25,12 +25,12 @@ module UberS3::Connection
         response_body = r.body
       end
       
-      {
+      UberS3::Response.new({
         :status => r.code.to_i,
         :header => r.header.to_hash,
         :body   => response_body,
         :raw    => r
-      }
+      })
     end
     
   end

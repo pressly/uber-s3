@@ -48,7 +48,7 @@ describe UberS3::Object do
       
       it 'perform md5 integrity check' do
         spec(s3) do
-          obj.content_md5 = Digest::MD5.hexdigest(obj.value)
+          obj.content_md5 = Digest::MD5.hexdigest(obj.value)          
           obj.save.should == true
         end
       end
@@ -65,7 +65,7 @@ describe UberS3::Object do
           gzipped_data.bytesize.should == value.bytesize
           
           # But, let's make sure on the server it's the small size
-          header = s3.connection.head(key)[:header]
+          header = s3.connection.head(key).header
           content_length = [header['content-length']].flatten.first.to_i
           content_length.should < value.bytesize
         end
