@@ -7,8 +7,8 @@ $:<< '../lib' << 'lib'
 require 'uber-s3'
 
 s3 = UberS3.new({
-  :access_key         => 'AKIAIIG7K3KMY5BPW7TA',
-  :secret_access_key  => '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',
+  :access_key         => 'x',
+  :secret_access_key  => 'y',
   :bucket             => 'nutestbucket',
   :adapter            => :net_http
 })

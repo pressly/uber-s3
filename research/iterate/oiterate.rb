@@ -10,10 +10,9 @@ require 'em-http'
 require 'em-synchrony'
 require 'em-synchrony/em-http'
 
-# require 'fiber_pool'
+require 'fiber_pool'
 require 'uber-s3'
 
-CONCURRENCY_LEVEL = 100
 
 # ************* Main issue:
 # At a pool size of 50 or above .. this thing will crash within 15 seconds
@@ -21,8 +20,7 @@ CONCURRENCY_LEVEL = 100
 # no idea why .. perhaps my connection is tapped, and the queue increases
 # or file descriptor limit.. etc. eventually the EM deferred_status will
 # be :failed
-# @fiber_pool = FiberPool.new(CONCURRENCY_LEVEL)
-
+@fiber_pool = FiberPool.new(50)
 
 EM.run do
 
@@ -52,40 +50,23 @@ EM.run do
     end
     
     # We duplicate the list to make sure we have enough objects to iterate
-    counter = 0
     (list*10000).each do |obj|
-      
-      if counter < CONCURRENCY_LEVEL
-      
-        Fiber.new {
-        # @fiber_pool.spawn do
-          x = obj.bucket.connection.head(obj.key)
+      @fiber_pool.spawn do
+        x = obj.bucket.connection.head(obj.key)
         
-          if x.status == 0
-            puts "ERROR: we got 0 status.. weird.. here's the raw response"
-            # For more details, throw a debugger in here and look at x.raw closer
-            puts x.raw.inspect
-
-            exit
-          end
-
-          debugger
-          a = 1
-
-          puts obj.to_s + " -- #{x.status}"
-          @num += 1 if x
-        # end
-        }.resume
+        if x.status == 0
+          puts "ERROR: we got 0 status.. weird.. here's the raw response"
+          # For more details, throw a debugger in here and look at x.raw closer
+          puts x.raw.inspect
+          
+          exit
+        end
+        
+        puts obj.to_s + " -- #{x.status}"
+        @num += 1 if x
       end
-      
-      counter += 1
     end
     
   }.resume
 
 end
-
-class FibeConcurrency
-  
-end
-

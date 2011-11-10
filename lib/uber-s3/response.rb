@@ -13,14 +13,14 @@ class UberS3
       self.body   = options[:body]
       self.raw    = options[:raw]
       
-      check_for_errors!
+      success?
     end
     
     # TODO: can/should we normalize the keys..? downcase.. etc.?
     # def header=(header)
     # end
     
-    def check_for_errors!
+    def success?
       return if status < 400 || body.to_s.empty?
       
       # Errors are XML

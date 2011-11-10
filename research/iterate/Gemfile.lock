@@ -1,18 +1,19 @@
 GIT
   remote: git://github.com/igrigorik/em-http-request.git
-  revision: c7848ff95a603c0d97b465ed1f2058178b3f78c0
+  revision: a1623d48a4edb57c58e76369123c7b9bd517a29a
   specs:
-    em-http-request (1.0.0.beta.4)
+    em-http-request (1.0.0)
       addressable (>= 2.2.3)
+      cookiejar
       em-socksify
       eventmachine (>= 1.0.0.beta.3)
-      http_parser.rb (>= 0.5.1)
+      http_parser.rb (>= 0.5.3)
 
 GIT
   remote: git://github.com/igrigorik/em-synchrony.git
-  revision: 5c2aa0ec22509102a1e2fda659c1d2cea5cb6d5e
+  revision: 39954edecdca6078cb18cea890558339122bd2e1
   specs:
-    em-synchrony (0.3.0.beta.1)
+    em-synchrony (1.0.0)
       eventmachine (>= 1.0.0.beta.1)
 
 GEM
@@ -20,13 +21,15 @@ GEM
   specs:
     addressable (2.2.6)
     archive-tar-minitar (0.5.2)
-    columnize (0.3.3)
+    columnize (0.3.4)
+    cookiejar (0.3.0)
     em-socksify (0.1.0)
       eventmachine
-    eventmachine (1.0.0.beta.3)
-    http_parser.rb (0.5.1)
+    eventmachine (1.0.0.beta.4)
+    http_parser.rb (0.5.3)
     linecache19 (0.5.12)
       ruby_core_source (>= 0.1.4)
+    mime-types (1.16)
     ruby-debug-base19 (0.11.25)
       columnize (>= 0.3.1)
       linecache19 (>= 0.5.11)
@@ -44,5 +47,6 @@ PLATFORMS
 DEPENDENCIES
   em-http-request!
   em-synchrony!
-  eventmachine (= 1.0.0.beta.3)
+  eventmachine (= 1.0.0.beta.4)
+  mime-types
   ruby-debug19

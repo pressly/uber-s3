@@ -1,12 +1,11 @@
 class UberS3
   class Object
     include Operation::Object::AccessPolicy
-    include Operation::Object::CacheControl
     include Operation::Object::ContentDisposition
     include Operation::Object::ContentEncoding
     include Operation::Object::ContentMd5
     include Operation::Object::ContentType
-    include Operation::Object::Expires
+    include Operation::Object::HttpCache
     include Operation::Object::Meta
     include Operation::Object::StorageClass
 
@@ -44,12 +43,13 @@ class UberS3
       gzip_content!
       
       # Standard pass through values
-      headers['Cache-Control']        = cache_control
       headers['Content-Disposition']  = content_disposition
       headers['Content-Encoding']     = content_encoding
       headers['Content-Length']       = size.to_s
       headers['Content-Type']         = content_type
+      headers['Cache-Control']        = cache_control
       headers['Expires']              = expires
+      headers['Pragma']               = pragma
             
       headers.each {|k,v| headers.delete(k) if v.nil? || v.empty? }
 
