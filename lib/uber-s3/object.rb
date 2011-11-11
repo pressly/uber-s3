@@ -50,7 +50,7 @@ class UberS3
       headers['Cache-Control']        = cache_control
       headers['Expires']              = expires
       headers['Pragma']               = pragma
-            
+
       headers.each {|k,v| headers.delete(k) if v.nil? || v.empty? }
 
       # Content MD5 integrity check
