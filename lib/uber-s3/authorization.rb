@@ -13,6 +13,10 @@ class UberS3
         req_canonical_amz_headers << amz_key+':'+headers[amz_key]+"\n"
       end
       
+      headers.keys.select {|k| k =~ /^x-amz-meta/ }.sort.each do |amz_key|
+        req_canonical_amz_headers << amz_key+':'+headers[amz_key]+"\n"
+      end
+      
       canonical_string_to_sign = "#{req_verb}\n"+
                                  "#{req_content_md5}\n"+
                                  "#{req_content_type}\n"+
