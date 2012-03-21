@@ -1,4 +1,4 @@
-require 'spec_helper'
+require '../spec_helper'
 
 describe UberS3::Object do
   [:net_http, :em_http_fibered].each do |connection_adapter|
@@ -34,6 +34,39 @@ describe UberS3::Object do
           s3.exists?('asdfasdfasdf').should == false
       
           s3[key].value.should == value
+      
+          s3[key].delete.should == true
+          s3[key].exists?.should == false
+        end
+      end
+      
+      it 'storing and loading an object with meta' do
+        spec(s3) do
+          obj.set_meta('a','a')
+          obj.set_meta('z','z')
+          obj.set_meta('test',"this is a test of meta")
+          obj.save.should == true
+          obj.exists?.should == true
+      
+          #--
+      
+          key = 'test2.txt'
+          value = 'testing 1234...'
+          meta = {}
+          meta['a'] = 'a'
+          meta['z'] = 'z'
+          meta['test'] = "this is a test of meta"
+          
+          s3.store(key, value, :meta => meta).should == true
+      
+          s3.exists?(key).should == true
+          s3.object(key).exists?.should == true
+          s3.exists?('asdfasdfasdf').should == false
+      
+          s3[key].value.should == value
+          s3[key].meta['a'].should == 'a'
+          s3[key].meta['z'].should == 'z'
+          s3[key].meta['test'].should == "this is a test of meta"
       
           s3[key].delete.should == true
           s3[key].exists?.should == false

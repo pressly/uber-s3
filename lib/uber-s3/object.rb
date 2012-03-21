@@ -32,7 +32,17 @@ class UberS3
     end
     
     def fetch
-      self.value = bucket.connection.get(key).body
+      response = bucket.connection.get(key)
+      
+      @meta ||= {}
+      
+      response.header.each do |h|
+        if k = h[0].split(/X.AMZ.META./i)[1]
+          self.set_meta(k.downcase, h[1].is_a?(Array) ? h[1].first : h[1])
+        end
+      end
+
+      self.value = response.body
       self
     end
     
@@ -50,6 +60,10 @@ class UberS3
       headers['Cache-Control']        = cache_control
       headers['Expires']              = expires
       headers['Pragma']               = pragma
+      
+      (@meta||{}).each_pair do |k, v|
+        headers["x-amz-meta-#{k}"] = v.to_s
+      end
 
       headers.each {|k,v| headers.delete(k) if v.nil? || v.empty? }
 
