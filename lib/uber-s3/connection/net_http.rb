@@ -1,4 +1,5 @@
 require 'net/http'
+require 'net/http/persistent'
 
 module UberS3::Connection
   class NetHttp < Adapter
@@ -10,12 +11,23 @@ module UberS3::Connection
       end
       
       uri = URI.parse(url)
-      http = Net::HTTP.new(uri.host, uri.port)
+
+      if persistent
+        http = Net::HTTP::Persistent.new("#{access_key}:#{client.bucket}")
+      else
+        http = Net::HTTP.new(uri.host, uri.port)
+      end
       
       req_klass = instance_eval("Net::HTTP::"+verb.to_s.capitalize)
       req = req_klass.new(uri.to_s, headers)
+
+      req.body = body if !body.nil? && !body.empty?
       
-      r = http.request(req, body)
+      if persistent
+        r = http.request(uri, req)
+      else
+        r = http.request(req)
+      end
       
       # Auto-decode any gzipped objects
       if verb == :get && r.header['content-encoding'] == 'gzip'

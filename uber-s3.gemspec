@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.require_path = 'lib'
 
   s.add_dependency('mime-types', ['~> 1.17'])
+  s.add_dependency('net-http-persistent', ['~> 2.5'])
 
   s.add_development_dependency('rake')
   s.add_development_dependency('rspec', ['~> 2.7.0'])

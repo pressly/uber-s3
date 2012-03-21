@@ -2,7 +2,8 @@ require 'spec_helper'
 
 describe UberS3::Object do
   [:net_http, :em_http_fibered].each do |connection_adapter|
-    
+  # [:net_http].each do |connection_adapter|
+
     context "#{connection_adapter}: Object" do
       let(:s3) do
         UberS3.new({
@@ -68,6 +69,21 @@ describe UberS3::Object do
           header = s3.connection.head(key).header
           content_length = [header['content-length']].flatten.first.to_i
           content_length.should < value.bytesize
+        end
+      end
+
+      it 'keep persistent connection with many objects saved' do
+        # NOTE: currently this doesn't actually confirm we've kept
+        # a persistent connection open.. just helps with empirical testing
+        spec(s3) do
+          dummy_data = "A"*1024
+
+          25.times do
+            rand_key = (0...8).map{65.+(rand(25)).chr}.join
+            s3.store(rand_key, dummy_data)
+            # puts "Storing #{rand_key}"
+          end
+
         end
       end
       

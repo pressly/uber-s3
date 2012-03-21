@@ -23,7 +23,7 @@ class UberS3
         self.client             = client
         self.access_key         = options[:access_key]
         self.secret_access_key  = options[:secret_access_key]
-        self.persistent         = options[:persistent] || true
+        self.persistent         = (options[:persistent].nil? ? true : options[:persistent])
         self.defaults           = options[:defaults] || {}
       end
     
@@ -36,7 +36,7 @@ class UberS3
           # Default headers
           headers['Date'] = Time.now.httpdate if !headers.keys.include?('Date')
           headers['User-Agent'] ||= "UberS3 v#{UberS3::VERSION}"
-          # headers['Connection'] = (persistent ? 'keep-alive' : 'close')
+          headers['Connection'] = (persistent ? 'keep-alive' : 'close')
           
           if body
             headers['Content-Length'] ||= body.bytesize.to_s
