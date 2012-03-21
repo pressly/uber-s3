@@ -32,22 +32,17 @@ class UberS3
     end
 
     def head
-      bucket.connection.head(key)
+      self.response = bucket.connection.head(key)
+      
+      parse_response_header!
+      self
     end
     
     def fetch
       self.response = bucket.connection.get(key)
       self.value = response.body
 
-      # Meta..
-      self.meta ||= {}
-      response.header.keys.sort.select {|k| k =~ /^x-amz-meta-/ }.each do |amz_key|
-        # TODO.. value is an array.. meaning a meta attribute can have multiple values
-        meta[amz_key.gsub(/^x-amz-meta-/, '')] = response.header[amz_key].first
-
-        # TODO.. em-http adapters return headers that look like X_AMZ_META_ .. very annoying.
-      end
-
+      parse_response_header!
       self
     end
     
@@ -131,5 +126,18 @@ class UberS3
     # TODO..
     # Add callback support so Operations can hook into that ... cleaner. ie. on_save { ... }
     
+    private
+
+      def parse_response_header!
+        # Meta..
+        self.meta ||= {}
+        response.header.keys.sort.select {|k| k =~ /^x-amz-meta-/ }.each do |amz_key|
+          # TODO.. value is an array.. meaning a meta attribute can have multiple values
+          meta[amz_key.gsub(/^x-amz-meta-/, '')] = response.header[amz_key].first
+
+          # TODO.. em-http adapters return headers that look like X_AMZ_META_ .. very annoying.
+        end
+      end
+
   end
 end

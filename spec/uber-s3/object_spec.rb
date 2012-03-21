@@ -94,7 +94,7 @@ describe UberS3::Object do
           s3.store(key, value)
 
           obj = s3.object(key).head
-          [obj.header['content-length']].flatten.first.to_i.should == value.length
+          [obj.response.header['content-length']].flatten.first.to_i.should == value.length
         end
       end
 
@@ -106,6 +106,9 @@ describe UberS3::Object do
           s3.store(key, value, :meta => meta)
 
           obj = s3.get(key)
+          obj.meta['content_md5'].should == meta['content_md5']
+
+          obj = s3.object(key).head
           obj.meta['content_md5'].should == meta['content_md5']
         end
       end
