@@ -9,7 +9,7 @@ class UberS3
     include Operation::Object::Meta
     include Operation::Object::StorageClass
 
-    attr_accessor :bucket, :key, :value, :size, :error
+    attr_accessor :bucket, :key, :response, :value, :size, :error
     
     def initialize(bucket, key, value=nil, options={})
       self.bucket        = bucket
@@ -30,9 +30,24 @@ class UberS3
     def exists?
       bucket.connection.head(key).status == 200
     end
+
+    def head
+      bucket.connection.head(key)
+    end
     
     def fetch
-      self.value = bucket.connection.get(key).body
+      self.response = bucket.connection.get(key)
+      self.value = response.body
+
+      # Meta..
+      self.meta ||= {}
+      response.header.keys.sort.select {|k| k =~ /^x-amz-meta-/ }.each do |amz_key|
+        # TODO.. value is an array.. meaning a meta attribute can have multiple values
+        meta[amz_key.gsub(/^x-amz-meta-/, '')] = response.header[amz_key].first
+
+        # TODO.. em-http adapters return headers that look like X_AMZ_META_ .. very annoying.
+      end
+
       self
     end
     
@@ -70,6 +85,11 @@ class UberS3
       # Storage class
       if !storage_class.nil?
         headers['x-amz-storage-class'] = storage_class.to_s.upcase
+      end
+
+      # Meta
+      if !meta.nil? && !meta.empty?
+        meta.each {|k,v| headers["x-amz-meta-#{k}"] = v }
       end
       
       # Let's do it

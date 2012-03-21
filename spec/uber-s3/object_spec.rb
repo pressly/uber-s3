@@ -78,12 +78,35 @@ describe UberS3::Object do
         spec(s3) do
           dummy_data = "A"*1024
 
-          25.times do
+          5.times do
             rand_key = (0...8).map{65.+(rand(25)).chr}.join
             s3.store(rand_key, dummy_data)
             # puts "Storing #{rand_key}"
           end
 
+        end
+      end
+
+      it 'make head request to get the content length' do
+        spec(s3) do
+          key = "test.txt"
+          value = "testtttttttttting"
+          s3.store(key, value)
+
+          obj = s3.object(key).head
+          [obj.header['content-length']].flatten.first.to_i.should == value.length
+        end
+      end
+
+      it 'store and load metadata' do
+        spec(s3) do
+          key = "test.txt"
+          value = "yep"
+          meta = { 'content_md5' => 'abc' }
+          s3.store(key, value, :meta => meta)
+
+          obj = s3.get(key)
+          obj.meta['content_md5'].should == meta['content_md5']
         end
       end
       

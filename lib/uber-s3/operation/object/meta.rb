@@ -6,6 +6,7 @@ module UberS3::Operation::Object
       base.send :include, InstanceMethods
       
       base.instance_eval do
+        attr_accessor :meta
       end
     end
 
