@@ -16,7 +16,6 @@ s3 = UberS3.new({
   :access_key         => 'abc',
   :secret_access_key  => 'def',
   :bucket             => 'funbucket',
-  :persistent         => true,
   :adapter            => :em_http_fibered
 })
 

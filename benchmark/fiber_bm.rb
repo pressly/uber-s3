@@ -77,7 +77,6 @@ s3 = {}.tap do |clients|
       :access_key         => SETTINGS['access_key'],
       :secret_access_key  => SETTINGS['secret_access_key'],
       :bucket             => SETTINGS['bucket'],
-      :persistent         => true,
       :adapter            => mode
     })
   end

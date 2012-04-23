@@ -53,12 +53,12 @@ end
 ## Clients --------------------------------------------------------------------
 
 s3 = {}.tap do |clients|
-  [:net_http, :em_http_fibered].each do |mode|
+  # [:net_http, :em_http_fibered].each do |mode|
+  [:net_http].each do |mode|
     clients[mode] = UberS3.new({
       :access_key         => SETTINGS['access_key'],
       :secret_access_key  => SETTINGS['secret_access_key'],
       :bucket             => SETTINGS['bucket'],
-      :persistent         => true,
       :adapter            => mode
     })
   end
@@ -66,6 +66,8 @@ end
 
 
 ## Let's run this thing -------------------------------------------------------
+
+puts "UberS3 v#{UberS3::VERSION}"
 
 Benchmark.bm do |bm|
   bm.report("saving #{NUM_FILES}x#{DATA_SIZE} byte objects (net-http) ") do

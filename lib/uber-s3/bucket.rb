@@ -1,10 +1,10 @@
 class UberS3
   class Bucket
-    attr_accessor :client, :name
+    attr_accessor :s3, :name
     
-    def initialize(client, name)
-      self.client = client
-      self.name   = name
+    def initialize(s3, name)
+      self.s3   = s3
+      self.name = name
     end
 
     def to_s
@@ -12,7 +12,7 @@ class UberS3
     end
     
     def connection
-      client.connection
+      s3.connection
     end
 
     def store(key, value, options={})
@@ -27,6 +27,10 @@ class UberS3
 
     def get(key)
       object(key).fetch
+    end
+
+    def head(key)
+      object(key).head
     end
 
     def exists?(key)

@@ -10,7 +10,6 @@ describe UberS3::Object do
           :access_key         => SETTINGS['access_key'],
           :secret_access_key  => SETTINGS['secret_access_key'],
           :bucket             => SETTINGS['bucket'],
-          :persistent         => SETTINGS['persistent'],
           :adapter            => connection_adapter
         })
       end
