@@ -1,7 +1,7 @@
 # Uber-S3
 
-A simple, but very fast, S3 client written in Ruby supporting
-synchronous and asynchronous HTTP communication.
+A simple, but very fast, S3 client for Ruby supporting
+synchronous (net-http) and asynchronous (em+fibers) io.
 
 
 ## Examples
@@ -102,13 +102,13 @@ s3.objects('/path').each {|obj| puts obj }
 
 ## Ruby version notes
 
-* Tested on MRI 1.9.2 (net_http / em_http_fibered adapters) -- recommended
-* Ruby 1.8.7 works for net/http clients, em_http_fibered adapter requires fibers (duh)
-* JRuby in 1.9 mode + em_http_fibered adapter should work, but held back because of issues with EM
+* Tested on MRI 1.9.2, MRI 1.9.3 (net_http / em_http_fibered adapters)
+* Tested on JRuby 1.7-dev in 1.9 mode (net_http)
+* Ruby 1.8.7 works for net/http clients, em_http_fibered adapter requires fibers
 
 ## Other notes
 
-* If Nokogiri is available, it will use it instead of REXML
+* If Nokogiri is available, it will be automatically used instead of REXML
 
 ## TODO
 
@@ -150,4 +150,4 @@ Yea... async adapter dominates. The 100x1KB files were 29x faster to upload, and
 
 ## License
 
-MIT License - Copyright (c) 2011 Nulayer Inc.
+MIT License - Copyright (c) 2012 Nulayer Inc.

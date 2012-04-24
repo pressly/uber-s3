@@ -14,18 +14,17 @@ UBERS3_ROOT = File.expand_path('../../', __FILE__)
 SPEC_ROOT = UBERS3_ROOT + '/spec'
 
 begin
-  require 'ruby-debug'
+  require 'pry'
+  require 'pry-nav'
 rescue LoadError
 end
 
 require 'uber-s3'
 require 'rspec'
-# require 'fabrication'
 
 # Requires supporting files with custom matchers and macros, etc,
 # in ./support/ and its subdirectories.
 # Dir["#{SPEC_ROOT}/support/**/*.rb"].each {|f| require f}
-# Dir["#{SPEC_ROOT}/fabricators/**/*.rb"].each {|f| require f}
 
 SETTINGS = YAML.load(File.read("#{SPEC_ROOT}/config/settings.yml"))['test']
 

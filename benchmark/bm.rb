@@ -22,7 +22,7 @@ require 'uber-s3'
 require 'benchmark'
 
 NUM_FILES  = 100
-DATA_SIZE  = 1024 # in bytes
+DATA_SIZE  = 1048 # in bytes
 
 
 ## Prepare files and data -----------------------------------------------------
@@ -43,7 +43,7 @@ data = (1..DATA_SIZE).map{|i| ('a'..'z').to_a[rand(26)]}.join
 # Saving objects
 save_object_bm = Proc.new do |client|
   files.each do |filename|
-    # $stderr.puts filename
+    $stderr.puts filename
     ret = client.store(filename, data)
     $stderr.puts "Error storing file #{filename}" if !ret
   end

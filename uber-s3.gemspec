@@ -22,5 +22,4 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency('rake')
   s.add_development_dependency('rspec', ['~> 2.7.0'])
-  # s.add_development_dependency('fabrication', ['~> 0.9.5'])
 end

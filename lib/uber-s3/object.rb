@@ -131,9 +131,10 @@ class UberS3
       def parse_response_header!
         # Meta..
         self.meta ||= {}
-        response.header.keys.sort.select {|k| k =~ /^x-amz-meta-/ }.each do |amz_key|
+        response.header.keys.sort.select {|k| k =~ /^x.amz.meta./i }.each do |amz_key|
+
           # TODO.. value is an array.. meaning a meta attribute can have multiple values
-          meta[amz_key.gsub(/^x-amz-meta-/, '')] = response.header[amz_key].first
+          meta[amz_key.gsub(/^x.amz.meta./i, '')] = [response.header[amz_key]].flatten.first
 
           # TODO.. em-http adapters return headers that look like X_AMZ_META_ .. very annoying.
         end

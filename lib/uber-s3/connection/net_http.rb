@@ -11,19 +11,29 @@ module UberS3::Connection
       
       self.uri = URI.parse(url)
 
-      # Keep connection open
+      # Init and open a HTTP connection
       self.http ||= Net::HTTP.new(uri.host, uri.port)
-      
+      if !http.started? || !http.active?
+        http.start
+
+        if Socket.const_defined?(:TCP_NODELAY)
+          socket = http.instance_variable_get(:@socket)
+          socket.io.setsockopt(Socket::IPPROTO_TCP, Socket::TCP_NODELAY, true)
+        end
+      end
+
       req_klass = instance_eval("Net::HTTP::"+verb.to_s.capitalize)
       req = req_klass.new(uri.to_s, headers)
 
       req.body = body if !body.nil? && !body.empty?
 
-      # Make HTTP request      
+      # Make HTTP request
       r = http.request(req)
-      
+
+      # $stderr.puts "active? " + http.active?.to_s
+
       # Auto-decode any gzipped objects
-      if verb == :get && r.header['content-encoding'] == 'gzip'
+      if verb == :get && r.header['Content-Encoding'] == 'gzip'
         gz = Zlib::GzipReader.new(StringIO.new(r.body))
         response_body = gz.read
       else
