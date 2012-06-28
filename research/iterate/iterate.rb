@@ -27,8 +27,8 @@ CONCURRENCY_LEVEL = 3
 EM.run do
 
   s3 = UberS3.new({
-    :access_key         => 'AKIAJRFZUZNRLMBHHU7A',
-    :secret_access_key  => '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',
+    :access_key         => 'x',
+    :secret_access_key  => 'y',
     :bucket             => 'data.crowdreel.com',
     :adapter            => :em_http_fibered
   })
