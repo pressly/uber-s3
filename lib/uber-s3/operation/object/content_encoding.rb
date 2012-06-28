@@ -16,7 +16,7 @@ module UberS3::Operation::Object
     module InstanceMethods
       
       # Default mime-types to be auto-gzipped if gzip == :web
-      WEB_GZIP_TYPES = ['text/html', 'text/plain', 'text/css',
+      WEB_GZIP_TYPES = ['text/html', 'text/plain', 'text/css', 'application/json',
                         'application/javascript', 'application/x-javascript',
                         'text/xml', 'application/xml', 'application/xml+rss']
       

@@ -11,16 +11,21 @@ require 'mime/types'
 class UberS3
   extend Forwardable
   
-  attr_accessor :connection, :bucket  
+  attr_reader :connection
+  attr_accessor :bucket, :options
   def_delegators :@bucket, :store, :set, :object, :get, :head, :[], :exists?, :objects
   
   def initialize(options={})
-    self.connection = Connection.open(self, options)
-    self.bucket     = options[:bucket]
+    self.options = options
+    self.bucket  = options[:bucket]
   end
-  
+
   def inspect
     "#<UberS3 client v#{UberS3::VERSION}>"
+  end
+
+  def connection
+    Thread.current['[uber-s3]:connection'] ||= Connection.open(self, options)
   end
   
   def bucket=(bucket)

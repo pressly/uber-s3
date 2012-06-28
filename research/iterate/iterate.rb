@@ -13,7 +13,7 @@ require 'em-synchrony/em-http'
 # require 'fiber_pool'
 require 'uber-s3'
 
-CONCURRENCY_LEVEL = 100
+CONCURRENCY_LEVEL = 3
 
 # ************* Main issue:
 # At a pool size of 50 or above .. this thing will crash within 15 seconds
@@ -27,8 +27,8 @@ CONCURRENCY_LEVEL = 100
 EM.run do
 
   s3 = UberS3.new({
-    :access_key         => 'x',
-    :secret_access_key  => 'y',
+    :access_key         => 'AKIAJRFZUZNRLMBHHU7A',
+    :secret_access_key  => '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',
     :bucket             => 'data.crowdreel.com',
     :adapter            => :em_http_fibered
   })
@@ -44,48 +44,62 @@ EM.run do
 
   Fiber.new {
 
-    # Grab up to 50 objects
+    # Grab up to 100 objects
     list = []
     s3.objects('/').each do |obj|      
       list << obj
-      break if list.length > 50
+      break if list.length > 100
     end
     
-    # We duplicate the list to make sure we have enough objects to iterate
+    puts "OKAYYYYYYYY..."
+    
+    # --
+    running = 0
     counter = 0
-    (list*10000).each do |obj|
+
+    f = Fiber.new {
+    list.each do |obj|
+
+      puts counter
       
-      if counter < CONCURRENCY_LEVEL
+      if running >= CONCURRENCY_LEVEL
+        x = Fiber.yield
+        puts "RESUME: #{x}"
+      end
       
-        Fiber.new {
-        # @fiber_pool.spawn do
+      if running < CONCURRENCY_LEVEL
+        ret = Fiber.new {
+          running += 1
+      
           x = obj.bucket.connection.head(obj.key)
-        
+      
           if x.status == 0
             puts "ERROR: we got 0 status.. weird.. here's the raw response"
             # For more details, throw a debugger in here and look at x.raw closer
             puts x.raw.inspect
-
             exit
           end
-
-          debugger
-          a = 1
-
+      
           puts obj.to_s + " -- #{x.status}"
+      
           @num += 1 if x
-        # end
+          running -= 1
+        
+          # if running < CONCURRENCY_LEVEL
+          #   f.resume("hiiiiiiiiiiiiiii")
+          # end
+        
+          "done"
         }.resume
+        
+        puts "RET: #{ret}"
       end
       
       counter += 1
     end
+    }.resume
     
   }.resume
 
-end
-
-class FibeConcurrency
-  
 end
 

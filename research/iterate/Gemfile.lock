@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/igrigorik/em-http-request.git
-  revision: a1623d48a4edb57c58e76369123c7b9bd517a29a
+  revision: 8ba262fee4a64a8d8fd07b9cc576d2a59e09b0c1
   specs:
     em-http-request (1.0.0)
       addressable (>= 2.2.3)
@@ -11,7 +11,7 @@ GIT
 
 GIT
   remote: git://github.com/igrigorik/em-synchrony.git
-  revision: 39954edecdca6078cb18cea890558339122bd2e1
+  revision: 8c33c074a5aca37bd9d3c210ef77596aaed1e9f6
   specs:
     em-synchrony (1.0.0)
       eventmachine (>= 1.0.0.beta.1)
@@ -21,16 +21,16 @@ GEM
   specs:
     addressable (2.2.6)
     archive-tar-minitar (0.5.2)
-    columnize (0.3.4)
+    columnize (0.3.6)
     cookiejar (0.3.0)
     em-socksify (0.1.0)
       eventmachine
     eventmachine (1.0.0.beta.4)
     http_parser.rb (0.5.3)
-    linecache19 (0.5.12)
+    linecache19 (0.5.13)
       ruby_core_source (>= 0.1.4)
-    mime-types (1.16)
-    ruby-debug-base19 (0.11.25)
+    mime-types (1.17.2)
+    ruby-debug-base19 (0.11.26)
       columnize (>= 0.3.1)
       linecache19 (>= 0.5.11)
       ruby_core_source (>= 0.1.4)
