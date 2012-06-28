@@ -28,6 +28,9 @@ class UberS3
     end
     
     def exists?
+      # TODO.. refactor this as if we've already called head
+      # on the object, there is no need to do it again..
+      # perhaps move some things into class methods?
       bucket.connection.head(key).status == 200
     end
 
@@ -84,7 +87,7 @@ class UberS3
 
       # Meta
       if !meta.nil? && !meta.empty?
-        meta.each {|k,v| headers["x-amz-meta-#{k}"] = v }
+        meta.each {|k,v| headers["x-amz-meta-#{k}"] = v.to_s }
       end
       
       # Let's do it
