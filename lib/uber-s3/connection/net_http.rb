@@ -12,15 +12,7 @@ module UberS3::Connection
       self.uri = URI.parse(url)
 
       # Init and open a HTTP connection
-      self.http ||= Net::HTTP.new(uri.host, uri.port)
-      if !http.started? || !http.active?
-        http.start
-
-        if Socket.const_defined?(:TCP_NODELAY)
-          socket = http.instance_variable_get(:@socket)
-          socket.io.setsockopt(Socket::IPPROTO_TCP, Socket::TCP_NODELAY, true)
-        end
-      end
+      http_connect! if http.nil? || !http.started?
 
       req_klass = instance_eval("Net::HTTP::"+verb.to_s.capitalize)
       req = req_klass.new(uri.to_s, headers)
@@ -28,9 +20,22 @@ module UberS3::Connection
       req.body = body if !body.nil? && !body.empty?
 
       # Make HTTP request
-      r = http.request(req)
+      retries = 2
+      begin
+        r = http.request(req)
+      rescue EOFError, Errno::EPIPE
+        # Something happened to our connection, lets try this again
+        socket = http.instance_variable_get(:@socket)
+        if socket.io.closed?
+          $stderr.puts "UberS3 - connection flopped.. socket.io is closed"
+          http_connect!
+        end
 
-      # $stderr.puts "active? " + http.active?.to_s
+        $stderr.puts "UberS3 - retrying.. attempts left: #{retries}"
+
+        retries -= 1
+        retry if retries >= 0
+      end
 
       # Auto-decode any gzipped objects
       if verb == :get && r.header['Content-Encoding'] == 'gzip'
@@ -47,6 +52,18 @@ module UberS3::Connection
         :raw    => r
       })
     end
+
+    private
+
+      def http_connect!
+        self.http = Net::HTTP.new(uri.host, uri.port)
+        http.start
+
+        if Socket.const_defined?(:TCP_NODELAY)
+          socket = http.instance_variable_get(:@socket)
+          socket.io.setsockopt(Socket::IPPROTO_TCP, Socket::TCP_NODELAY, true)
+        end
+      end
     
   end
 end

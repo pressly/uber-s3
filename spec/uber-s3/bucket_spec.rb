@@ -1,7 +1,9 @@
 require 'spec_helper'
 
 describe UberS3::Bucket do
-  [:net_http, :em_http_fibered].each do |connection_adapter|
+  # [:net_http, :em_http_fibered].each do |connection_adapter|
+  [:net_http].each do |connection_adapter|
+
     
     context "#{connection_adapter}: Bucket" do
       let(:s3) do
