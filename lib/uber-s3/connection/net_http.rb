@@ -25,14 +25,7 @@ module UberS3::Connection
         r = http.request(req)
       rescue EOFError, Errno::EPIPE
         # Something happened to our connection, lets try this again
-        socket = http.instance_variable_get(:@socket)
-        if socket.io.closed?
-          $stderr.puts "UberS3 - connection flopped.. socket.io is closed"
-          http_connect!
-        end
-
-        $stderr.puts "UberS3 - retrying.. attempts left: #{retries}"
-
+        http_connect!
         retries -= 1
         retry if retries >= 0
       end
