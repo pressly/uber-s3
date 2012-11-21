@@ -17,7 +17,7 @@ class UberS3
     
     class Adapter
     
-      attr_accessor :s3, :http, :uri, :access_key, :secret_access_key, :defaults
+      attr_accessor :s3, :http, :uri, :access_key, :secret_access_key, :region, :defaults
     
       def initialize(s3, options={})
         self.s3                 = s3
@@ -25,6 +25,7 @@ class UberS3
         self.uri                = nil
         self.access_key         = options[:access_key]
         self.secret_access_key  = options[:secret_access_key]
+				self.region 					  = options[:region]
         self.defaults           = options[:defaults] || {}
       end
     
@@ -48,7 +49,12 @@ class UberS3
           headers['Authorization'] = "AWS #{access_key}:#{signature}"
           
           # Make the request
-          url = "http://#{s3.bucket}.s3.amazonaws.com/#{path}"
+					if s3.region.blank?
+						url = "http://#{s3.bucket}.s3.amazonaws.com/#{path}"
+					else
+						url = "http://#{s3.bucket}.s3-#{s3.region}.amazonaws.com/#{path}"
+					end
+
           request(verb, url, headers, body)
         end
       end
