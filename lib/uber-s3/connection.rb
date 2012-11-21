@@ -52,7 +52,7 @@ class UberS3
 					if s3.region.blank?
 						url = "http://#{s3.bucket}.s3.amazonaws.com/#{path}"
 					else
-						url = "http://#{s3.bucket}.s3-#{s3.region}.amazonaws.com/#{path}"
+						url = "http://#{s3.bucket}.s3-#{self.region}.amazonaws.com/#{path}"
 					end
 
           request(verb, url, headers, body)
