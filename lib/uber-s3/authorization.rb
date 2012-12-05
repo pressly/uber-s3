@@ -1,5 +1,6 @@
 class UberS3
   module Authorization
+    extend self
     
     def sign(client, verb, path, headers={})
       req_verb                  = verb.to_s.upcase
@@ -24,6 +25,5 @@ class UberS3
       [OpenSSL::HMAC.digest(digest, client.connection.secret_access_key, canonical_string_to_sign)].pack("m").strip
     end
     
-    extend self    
   end
 end
