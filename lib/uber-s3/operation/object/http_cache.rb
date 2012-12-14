@@ -54,10 +54,10 @@ module UberS3::Operation::Object
       # Expires can take a time or string
       def expires=(val)
         if val.is_a?(String)
-          self.expires = val
+          @expires = val
         elsif val.is_a?(Time)
-          # RFC 1123 format 
-          self.expires = val.strftime("%a, %d %b %Y %H:%I:%S %Z")
+          # RFC 1123 format
+          @expires = val.strftime("%a, %d %b %Y %H:%I:%S %Z")
         end
       end
       
