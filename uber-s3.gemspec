@@ -3,7 +3,7 @@ $:.push File.expand_path('../lib', __FILE__)
 require 'uber-s3/version'
 
 Gem::Specification.new do |s|
-  s.name        = 'uber-s3'
+  s.name        = 'crashlytics-uber-s3'
   s.version     = UberS3::VERSION
   s.platform    = Gem::Platform::RUBY
   s.summary     = 'A simple & very fast S3 client supporting sync / async HTTP adapters'
