@@ -22,7 +22,7 @@ module UberS3::Connection
           :body   => r.response,
           :raw    => r
         })
-      rescue Exception => e
+      rescue UberS3::Error::InternalError => e
         retries -= 1
         retry if retries >= 0
       end
