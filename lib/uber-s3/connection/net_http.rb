@@ -50,6 +50,7 @@ module UberS3::Connection
 
       def http_connect!
         self.http = Net::HTTP.new(uri.host, uri.port)
+        http.open_timeout = http.read_timeout = 10
         http.start
 
         if Socket.const_defined?(:TCP_NODELAY)
