@@ -19,7 +19,7 @@ GIT
 PATH
   remote: .
   specs:
-    crashlytics-uber-s3 (0.3.0)
+    crashlytics-uber-s3 (0.3.1)
       mime-types (~> 1.17)
 
 GEM
@@ -36,7 +36,7 @@ GEM
     http_parser.rb (0.5.3)
     http_parser.rb (0.5.3-java)
     method_source (0.7.1)
-    mime-types (1.21)
+    mime-types (1.23)
     pry (0.9.8.4)
       coderay (~> 1.0.5)
       method_source (~> 0.7.1)
