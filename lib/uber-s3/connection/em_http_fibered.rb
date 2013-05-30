@@ -11,15 +11,21 @@ module UberS3::Connection
       params[:head] = headers
       params[:body] = body if body
       # params[:keepalive] = true if persistent # causing issues ...?
-        
-      r = EM::HttpRequest.new(url).send(verb, params)
 
-      UberS3::Response.new({
-        :status => r.response_header.status,
-        :header => r.response_header,
-        :body   => r.response,
-        :raw    => r
-      })
+      retries = 2
+      begin
+        r = EM::HttpRequest.new(url, :inactivity_timeout => 10, :connect_timeout => 10).send(verb, params)
+
+        UberS3::Response.new({
+          :status => r.response_header.status,
+          :header => r.response_header,
+          :body   => r.response,
+          :raw    => r
+        })
+      rescue UberS3::Error::InternalError => e
+        retries -= 1
+        retry if retries >= 0
+      end
     end
     
   end

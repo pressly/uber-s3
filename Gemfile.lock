@@ -19,7 +19,7 @@ GIT
 PATH
   remote: .
   specs:
-    uber-s3 (0.2.3)
+    crashlytics-uber-s3 (0.3.2)
       mime-types (~> 1.17)
 
 GEM
@@ -31,12 +31,12 @@ GEM
     diff-lcs (1.1.3)
     em-socksify (0.2.0)
       eventmachine (>= 1.0.0.beta.4)
-    eventmachine (1.0.0.beta.4)
-    eventmachine (1.0.0.beta.4-java)
+    eventmachine (1.0.3)
+    eventmachine (1.0.3-java)
     http_parser.rb (0.5.3)
     http_parser.rb (0.5.3-java)
     method_source (0.7.1)
-    mime-types (1.19)
+    mime-types (1.23)
     pry (0.9.8.4)
       coderay (~> 1.0.5)
       method_source (~> 0.7.1)
@@ -65,11 +65,11 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  crashlytics-uber-s3!
   em-http-request!
   em-synchrony!
-  eventmachine (= 1.0.0.beta.4)
+  eventmachine
   pry
   pry-nav
   rake
   rspec (~> 2.7.0)
-  uber-s3!
