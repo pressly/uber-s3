@@ -7,6 +7,7 @@ class UberS3
     include Operation::Object::ContentType
     include Operation::Object::HttpCache
     include Operation::Object::Meta
+    include Operation::Object::SSE
     include Operation::Object::StorageClass
 
     attr_accessor :bucket, :key, :response, :value, :size, :error
@@ -56,13 +57,14 @@ class UberS3
       gzip_content!
       
       # Standard pass through values
-      headers['Content-Disposition']  = content_disposition
-      headers['Content-Encoding']     = content_encoding
-      headers['Content-Length']       = size.to_s
-      headers['Content-Type']         = content_type
-      headers['Cache-Control']        = cache_control
-      headers['Expires']              = expires
-      headers['Pragma']               = pragma
+      headers['Content-Disposition']          = content_disposition
+      headers['Content-Encoding']             = content_encoding
+      headers['Content-Length']               = size.to_s
+      headers['Content-Type']                 = content_type
+      headers['Cache-Control']                = cache_control
+      headers['Expires']                      = expires
+      headers['Pragma']                       = pragma
+      headers['x-amz-server-side-encryption'] = sse
 
       headers.each {|k,v| headers.delete(k) if v.nil? || v.empty? }
 
