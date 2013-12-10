@@ -27,7 +27,7 @@ class UberS3
       doc = Util::XmlDocument.new(body)
       
       self.error_key      = doc.xpath('//Error/Code').first.text
-      self.error_message  = doc.xpath('//Error/Message').first.text
+      self.error_message  = doc.xpath('//Error/Message').first.text if doc.xpath('//Error/Message').first
       
       error_klass = instance_eval("Error::#{error_key}") rescue nil
       
