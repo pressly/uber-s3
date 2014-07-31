@@ -21,7 +21,7 @@ class UberS3
                                  "#{req_canonical_amz_headers}"+
                                  "#{req_canonical_resource}"
       
-      digest = OpenSSL::Digest::Digest.new('sha1')
+      digest = OpenSSL::Digest.new('sha1')
       [OpenSSL::HMAC.digest(digest, client.connection.secret_access_key, canonical_string_to_sign)].pack("m").strip
     end
     
