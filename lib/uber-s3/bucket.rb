@@ -54,11 +54,10 @@ class UberS3
         self.objects  = []
       end
       
-      def fetch(marker=nil)
+      def fetch(marker=nil, max_keys=500)
         @objects = []
 
-        default_max_keys = 500
-        response = bucket.connection.get("/?prefix=#{CGI.escape(key)}&marker=#{marker}&max-keys=#{default_max_keys}")        
+        response = bucket.connection.get("/?prefix=#{CGI.escape(key)}&marker=#{marker}&max-keys=#{max_keys}")        
 
         @objects = parse_contents(response.body)
       end
