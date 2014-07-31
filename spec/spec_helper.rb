@@ -21,6 +21,7 @@ end
 
 require 'uber-s3'
 require 'rspec'
+require 'yaml'
 
 # Requires supporting files with custom matchers and macros, etc,
 # in ./support/ and its subdirectories.

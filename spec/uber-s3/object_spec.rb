@@ -39,6 +39,26 @@ describe UberS3::Object do
         end
       end
       
+      it 'storing an object with SSE' do
+        spec(s3) do
+          sse_obj = UberS3::Object.new(s3.bucket, '/sse_test.txt', 'heyo', :sse => 'AES256')
+          
+          sse_obj.save.should == true
+          sse_obj.exists?.should == true
+          
+          sse_obj.delete.should == true
+          sse_obj.exists?.should == false          
+          
+          obj.sse = 'AES256'
+          
+          obj.save.should == true
+          obj.exists?.should == true
+          
+          obj.delete.should == true
+          obj.exists?.should == true
+        end
+      end
+      
       it 'has access level control' do
         spec(s3) do
           obj.access = :public_read
