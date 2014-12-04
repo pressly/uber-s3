@@ -19,8 +19,8 @@ GIT
 PATH
   remote: .
   specs:
-    uber-s3 (0.2.3)
-      mime-types (~> 1.17)
+    uber-s3 (0.2.4)
+      mime-types
 
 GEM
   remote: http://rubygems.org/
@@ -36,7 +36,7 @@ GEM
     http_parser.rb (0.5.3)
     http_parser.rb (0.5.3-java)
     method_source (0.7.1)
-    mime-types (1.19)
+    mime-types (2.4.3)
     pry (0.9.8.4)
       coderay (~> 1.0.5)
       method_source (~> 0.7.1)

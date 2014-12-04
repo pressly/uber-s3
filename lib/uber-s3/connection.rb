@@ -49,7 +49,7 @@ class UberS3
           headers['Authorization'] = "AWS #{access_key}:#{signature}"
           
           # Make the request
-					if self.region.blank?
+					if self.region.nil?
 						url = "http://#{s3.bucket}.s3.amazonaws.com/#{path}"
 					else
 						url = "http://#{s3.bucket}.s3-#{self.region}.amazonaws.com/#{path}"
