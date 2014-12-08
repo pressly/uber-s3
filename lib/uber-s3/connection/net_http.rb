@@ -9,13 +9,13 @@ module UberS3::Connection
         headers['Accept-Encoding'] = 'gzip, deflate'
       end
       
-      self.uri = URI.parse(url)
+      self.uri = URI.parse(url.gsub('_','-'))
 
       # Init and open a HTTP connection
       http_connect! if http.nil? || !http.started?
 
       req_klass = instance_eval("Net::HTTP::"+verb.to_s.capitalize)
-      req = req_klass.new(uri.to_s, headers)
+      req = req_klass.new(url, headers)
 
       req.body = body if !body.nil? && !body.empty?
 
