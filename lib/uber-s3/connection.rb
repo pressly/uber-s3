@@ -17,7 +17,7 @@ class UberS3
     
     class Adapter
     
-      attr_accessor :s3, :http, :uri, :access_key, :secret_access_key, :region, :defaults, :host, :pathStyle
+      attr_accessor :s3, :http, :uri, :access_key, :secret_access_key, :region, :defaults, :host, :path_style
     
       def initialize(s3, options={})
         self.s3                 = s3
@@ -26,7 +26,7 @@ class UberS3
         self.access_key         = options[:access_key]
         self.secret_access_key  = options[:secret_access_key]
         self.host               = options[:host] ||= nil
-        self.pathStyle          = options[:pathStyle] == true
+        self.path_style         = options[:path_style] == true
         self.region             = options[:region] ||= nil
         self.defaults           = options[:defaults] || {}
       end
@@ -62,7 +62,7 @@ class UberS3
           end
 
           # Use PathStyle Requests if set
-          if pathStyle
+          if path_style
             url = "http://#{hostname}/#{s3.bucket}/#{path}"
           else
             url = "http://#{s3.bucket}.#{hostname}/#{path}"
