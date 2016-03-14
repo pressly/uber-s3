@@ -45,6 +45,11 @@ module UberS3::Connection
         :raw    => r
       })
     end
+    
+    def reconnect!
+      http.finish if http && http.started?
+      http_connect!
+    end
 
     private
 

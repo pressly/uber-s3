@@ -88,6 +88,9 @@ class UberS3
         raise "Abstract method"
       end
 
+      def reconnect!(verb, url, headers={}, body=nil)
+        raise "Abstract method"
+      end
     end
     
   end  
