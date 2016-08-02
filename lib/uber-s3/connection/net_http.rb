@@ -4,6 +4,7 @@ module UberS3::Connection
   class NetHttp < Adapter
     
     def request(verb, url, headers={}, body=nil)
+      options = self.request_options
       if verb == :get
         # Support fetching compressed data
         headers['Accept-Encoding'] = 'gzip, deflate'
@@ -20,14 +21,18 @@ module UberS3::Connection
       req.body = body if !body.nil? && !body.empty?
 
       # Make HTTP request
-      retries = 2
+      retries = options.fetch(:num_retries, 2)
       begin
         r = http.request(req)
-      rescue EOFError, Errno::EPIPE
+      rescue EOFError, Errno::EPIPE => e
         # Something happened to our connection, lets try this again
         http_connect!
-        retries -= 1
-        retry if retries >= 0
+        if retries.present?
+          retries -= 1
+          retry if retries >= 0
+        else
+          raise e
+        end
       end
 
       # Auto-decode any gzipped objects
