@@ -19,6 +19,16 @@ s3 = UberS3.new({
   :adapter            => :em_http_fibered
 })
 
+# Custom host, with bucket in path instead of as a subdomain
+s3 = UberS3.new({
+  :access_key         => 'abc',
+  :secret_access_key  => 'def',
+  :bucket             => 'funbucket',
+  :adapter            => :em_http_fibered,
+  :host               => 'localhost:4567',
+  :path_style         => true
+})
+
 
 
 ##########################################################################

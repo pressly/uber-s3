@@ -17,7 +17,8 @@ class UberS3
     
     class Adapter
     
-      attr_accessor :s3, :http, :uri, :access_key, :secret_access_key, :region, :defaults
+      attr_accessor :s3, :http, :http_options, :uri, :access_key, :secret_access_key,
+                    :region, :defaults, :host, :path_style, :request_options
     
       def initialize(s3, options={})
         self.s3                 = s3
@@ -25,7 +26,11 @@ class UberS3
         self.uri                = nil
         self.access_key         = options[:access_key]
         self.secret_access_key  = options[:secret_access_key]
-				self.region 					  = options[:region]
+        self.host               = options[:host] ||= nil
+        self.path_style         = options[:path_style] == true
+        self.http_options       = options[:http_options] || {}
+        self.request_options    = options[:request_options] || {}
+        self.region             = options[:region] ||= nil
         self.defaults           = options[:defaults] || {}
       end
     
@@ -47,14 +52,26 @@ class UberS3
           # Authorize the request          
           signature = Authorization.sign(s3, verb, path, headers)
           headers['Authorization'] = "AWS #{access_key}:#{signature}"
-          
-          # Make the request
-					if self.region.blank?
-						url = "http://#{s3.bucket}.s3.amazonaws.com/#{path}"
-					else
-						url = "http://#{s3.bucket}.s3-#{self.region}.amazonaws.com/#{path}"
-					end
 
+          # Verify and create the hostname to use         
+          if host.nil? and region.nil? then
+            hostname = "s3.amazonaws.com"
+          elsif host.nil? and not region.nil? then
+            hostname = "s3-#{region}.amazonaws.com"
+          elsif not host.nil? and not region.nil? then
+            raise "You cannot specify an own hostname and a region at the same time"
+          else
+            hostname = host
+          end
+
+          # Use PathStyle Requests if set
+          if path_style
+            url = "http://#{hostname}/#{s3.bucket}/#{path}"
+          else
+            url = "http://#{s3.bucket}.#{hostname}/#{path}"
+          end          
+
+          # Make the request
           request(verb, url, headers, body)
         end
       end
@@ -72,6 +89,9 @@ class UberS3
         raise "Abstract method"
       end
 
+      def reconnect!(verb, url, headers={}, body=nil)
+        raise "Abstract method"
+      end
     end
     
   end  
