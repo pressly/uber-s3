@@ -56,7 +56,7 @@ module UberS3::Connection
       def http_connect!
         self.http = Net::HTTP.new(uri.host, uri.port)
         
-        http.connect_timeout = http_options[:connect_timeout].to_f if http_options.has_key?(:connect_timeout)
+        http.open_timeout = http_options[:open_timeout].to_f if http_options.has_key?(:open_timeout)
         http.read_timeout = http_options[:read_timeout].to_f if http_options.has_key?(:read_timeout)
         
         http.start
