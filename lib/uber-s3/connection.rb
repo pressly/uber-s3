@@ -18,7 +18,7 @@ class UberS3
     class Adapter
     
       attr_accessor :s3, :http, :http_options, :uri, :access_key, :secret_access_key,
-                    :region, :defaults, :host, :path_style
+                    :region, :defaults, :host, :path_style, :request_options
     
       def initialize(s3, options={})
         self.s3                 = s3
@@ -29,6 +29,7 @@ class UberS3
         self.host               = options[:host] ||= nil
         self.path_style         = options[:path_style] == true
         self.http_options       = options[:http_options] || {}
+        self.request_options    = options[:request_options] || {}
         self.region             = options[:region] ||= nil
         self.defaults           = options[:defaults] || {}
       end
